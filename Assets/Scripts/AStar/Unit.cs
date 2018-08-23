@@ -19,11 +19,19 @@ public class Unit : MonoBehaviour
     private float fTurnSpeed = 0.1f;
 
     [SerializeField]
-    private bool bDrawPathGizmos = false;
+    private bool DrawPathGizmos = false;
+    [SerializeField]
+    private bool SmoothPath = false;
+
+    [SerializeField]
+    private float fSpeed = 5f;
 
 
     private Transform mUnitTransform;
     private Path mPath;
+
+    private Vector3[] vec3_WayPoints;
+    private int nTargetIndex;
 
     #endregion
 
@@ -43,15 +51,26 @@ public class Unit : MonoBehaviour
         if (bPathFound)
         {
 
-            mPath = new Path(WayPoints, mUnitTransform.position, fTurnDistance);
+            if (SmoothPath)
+            {
+                mPath = new Path(WayPoints, mUnitTransform.position, fTurnDistance);
 
-            Timing.KillCoroutines("WalkThePath");
-            Timing.RunCoroutine(WalkThePath());
+                Timing.KillCoroutines("WalkTheSmoothPath");
+                Timing.RunCoroutine(WalkTheSmoothPath());
+            }
+            else
+            {
+                vec3_WayPoints = WayPoints;
+                nTargetIndex = 0;
+
+                Timing.KillCoroutines("WalkThePath");
+                Timing.RunCoroutine(WalkThePath());
+            }
 
         }
     }
 
-    IEnumerator<float> WalkThePath()
+    IEnumerator<float> WalkTheSmoothPath()
     {
 
         //TODO: !Implement Sharp Turns long Y-Axis instead of Smooth Lerps
@@ -88,16 +107,66 @@ public class Unit : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
+    IEnumerator<float> WalkThePath()
     {
-        if (bDrawPathGizmos)
+        Vector3 currentWaypoint = vec3_WayPoints[0];
+
+        while (true)
         {
-            if (mPath != null)
+            if (transform.position == currentWaypoint)
             {
-                mPath.DrawWithGizmos();
+                nTargetIndex += 1;
+                if (nTargetIndex >= vec3_WayPoints.Length)
+                {
+                    yield break;
+                }
+                currentWaypoint = vec3_WayPoints[nTargetIndex];
             }
+
+            transform.position = Vector3.MoveTowards(transform.position, currentWaypoint, fSpeed * Time.deltaTime);
+            yield return Timing.WaitForOneFrame;
+
         }
     }
+
+    private void OnDrawGizmos()
+    {
+        if (DrawPathGizmos)
+        {
+            if (SmoothPath)
+            {
+                if (mPath != null)
+                {
+                    mPath.DrawWithGizmos();
+                }
+            }
+            else
+            {
+                if (vec3_WayPoints != null)
+                {
+                    for (int i = nTargetIndex; i < vec3_WayPoints.Length; i++)
+                    {
+                        Gizmos.color = Color.black;
+                        Gizmos.DrawCube(vec3_WayPoints[i], Vector3.one);
+
+                        if (i == nTargetIndex)
+                        {
+                            Gizmos.DrawLine(mUnitTransform.position, vec3_WayPoints[i]);
+                        }
+                        else
+                        {
+                            Gizmos.DrawLine(vec3_WayPoints[i - 1], vec3_WayPoints[i]);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+
+
+
 
     #endregion
 

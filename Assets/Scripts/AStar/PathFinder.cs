@@ -140,22 +140,22 @@ namespace Pathfinding
 
             int nPathLength = Path.Count;
 
-            //for (int i = 1; i < nPathLength; i++)
-            //{
-            //    Vector3 vec3_DirectionCurrent = new Vector3((Path[i - 1].X - Path[i].X), (Path[i - 1].Y - Path[i].Y), (Path[i - 1].Z - Path[i].Z));
-            //    if (vec3_DirectionPrevious != vec3_DirectionCurrent)
-            //    {
-            //        list_WayPoints.Add(Path[i - 1].WorldPosition);
-            //        list_WayPoints.Add(Path[i].WorldPosition);
-            //    }
-
-            //    vec3_DirectionPrevious = vec3_DirectionCurrent;
-            //}
-
-            for (int i = 0; i < nPathLength; i++)
+            for (int i = 1; i < nPathLength; i++)
             {
-                list_WayPoints.Add(Path[i].WorldPosition);
+                Vector3 vec3_DirectionCurrent = new Vector3((Path[i - 1].X - Path[i].X), (Path[i - 1].Y - Path[i].Y), (Path[i - 1].Z - Path[i].Z));
+                if (vec3_DirectionPrevious != vec3_DirectionCurrent)
+                {
+                    list_WayPoints.Add(Path[i - 1].WorldPosition);
+                    list_WayPoints.Add(Path[i].WorldPosition);
+                }
+
+                vec3_DirectionPrevious = vec3_DirectionCurrent;
             }
+
+            //for (int i = 0; i < nPathLength; i++)
+            //{
+            //    list_WayPoints.Add(Path[i].WorldPosition);
+            //}
 
             return list_WayPoints.ToArray();
         }

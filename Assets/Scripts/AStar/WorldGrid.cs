@@ -96,9 +96,12 @@ namespace Pathfinding
                 {
                     foreach (Node mNode in mGrid)
                     {
-                        Gizmos.color = Color.Lerp(Color.white, Color.black, Mathf.InverseLerp(nMinWeight, nMaxWeight, mNode.Weight));
-                        Gizmos.color = mNode.Traversable ? Gizmos.color : Color.red;
-                        Gizmos.DrawCube(mNode.WorldPosition, VectorExtensions.Multiply(Vector3.one, fNodeDiameter));
+                        if (mNode != null)
+                        {
+                            Gizmos.color = Color.Lerp(Color.white, Color.black, Mathf.InverseLerp(nMinWeight, nMaxWeight, mNode.Weight));
+                            Gizmos.color = mNode.Traversable ? Gizmos.color : Color.red;
+                            Gizmos.DrawCube(mNode.WorldPosition, VectorExtensions.Multiply(Vector3.one, fNodeDiameter));
+                        }
                     }
                 }
             }
@@ -154,24 +157,35 @@ namespace Pathfinding
                         }
 
 
-                        //TODO: Add Penalty Based on Obstcale 
-                        if (!bTraversable)
+                        //TODO! : Maybe Chnage SO it is Not Traversable instead of Null
+                        if (mHit.collider != null)
                         {
-                            nWeight += 10;
+                            if (y >= 5)
+                                Debug.Log(mHit.collider.name);
+
+                            //TODO: Add Penalty Based on Obstcale 
+                            if (!bTraversable)
+                            {
+                                nWeight += 14;
+                            }
+
+                            //TODO: Make this a Parameterized Constructor
+                            mGrid[x, y, z] = new Node();
+
+                            mGrid[x, y, z].WorldPosition = vec3_NodePosition;
+                            mGrid[x, y, z].Traversable = bTraversable;
+                            mGrid[x, y, z].X = x;
+                            mGrid[x, y, z].Y = y;
+                            mGrid[x, y, z].Z = z;
+
+                            mGrid[x, y, z].Weight = nWeight;
+                        }
+                        else
+                        {
+                            mGrid[x, y, z] = null;
                         }
 
-                        //TODO: Make this a Parameterized Constructor
-                        mGrid[x, y, z] = new Node();
-
-                        mGrid[x, y, z].WorldPosition = vec3_NodePosition;
-                        mGrid[x, y, z].Traversable = bTraversable;
-                        mGrid[x, y, z].X = x;
-                        mGrid[x, y, z].Y = y;
-                        mGrid[x, y, z].Z = z;
-
-                        mGrid[x, y, z].Weight = nWeight;
                     }
-
                 }
             }
         }
@@ -191,7 +205,8 @@ namespace Pathfinding
             percentZ = Mathf.Clamp01(percentZ);
 
             int x = Mathf.RoundToInt((nGridColumns - 1) * percentX);
-            int y = Mathf.RoundToInt((nGridDepth - 1) * percentY);
+            //int y = Mathf.RoundToInt((nGridDepth - 1) * percentY);
+            int y = Mathf.RoundToInt(nGridDepth * percentY);
             int z = Mathf.RoundToInt((nGridRows - 1) * percentZ);
 
             if (mGrid[x, y, z] == null)

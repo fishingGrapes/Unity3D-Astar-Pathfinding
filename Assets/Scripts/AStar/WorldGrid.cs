@@ -219,6 +219,7 @@ namespace Pathfinding
             list_Neighbours.Clear();
             int nNeighbourX, nNeighbourZ, nNeighbourY;
 
+
             for (int y = -1; y <= 1; y++)
             {
                 for (int x = -1; x <= 1; x++)
@@ -232,9 +233,14 @@ namespace Pathfinding
                         if (z != 0 && y != 0)
                             continue;
 
+                        if (Mathf.Abs(x) != 0 && y != 0)
+                            continue;
+
+
                         nNeighbourX = mNode.X + x;
                         nNeighbourZ = mNode.Z + z;
                         nNeighbourY = mNode.Y + y;
+
 
                         if (nNeighbourY >= 0 && nNeighbourY < nGridDepth)
                         {
@@ -246,6 +252,7 @@ namespace Pathfinding
                                         continue;
                                     list_Neighbours.Add(mGrid[nNeighbourX, nNeighbourY, nNeighbourZ]);
                                 }
+
                             }
                         }
 

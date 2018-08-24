@@ -121,7 +121,6 @@ namespace Pathfinding
 
             while (mCurrentNode != startNode)
             {
-                Debug.Log(mCurrentNode.WorldPosition);
                 list_PathNodes.Add(mCurrentNode);
                 mCurrentNode = mCurrentNode.Parent;
             }

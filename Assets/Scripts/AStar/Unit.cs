@@ -2,6 +2,7 @@
 using Pathfinding;
 using System.Collections.Generic;
 using MEC;
+using System;
 
 public class Unit : MonoBehaviour
 {
@@ -33,22 +34,33 @@ public class Unit : MonoBehaviour
     private Vector3[] vec3_WayPoints;
     private int nTargetIndex;
 
+    private Guid currentRequestID;
+    private CoroutineHandle handle;
+
     #endregion
 
     #region Unity Callbacks
     void Start()
     {
         mUnitTransform = this.transform;
-        PathFactory.RequestPath(new PathRequest(mUnitTransform.position, Target.position, OnPathProcessed));
+    }
+
+    public void FindPath()
+    {
+        Guid requestID = Guid.NewGuid();
+        PathRequest request = new PathRequest(requestID, mUnitTransform.position, Target.position, OnPathProcessed);
+        PathFactory.RequestPath(request);
+
+        currentRequestID = requestID;
     }
 
     #endregion
 
     #region Private Methods
 
-    private void OnPathProcessed(Vector3[] WayPoints, bool bPathFound)
+    private void OnPathProcessed(Guid requestID, Vector3[] WayPoints, bool bPathFound)
     {
-        if (bPathFound)
+        if (bPathFound && currentRequestID == requestID)
         {
 
             if (SmoothPath)
@@ -63,8 +75,8 @@ public class Unit : MonoBehaviour
                 vec3_WayPoints = WayPoints;
                 nTargetIndex = 0;
 
-                Timing.KillCoroutines("WalkThePath");
-                Timing.RunCoroutine(WalkThePath());
+                Timing.KillCoroutines(handle);
+                handle = Timing.RunCoroutine(WalkThePath());
             }
 
         }
@@ -109,11 +121,12 @@ public class Unit : MonoBehaviour
 
     IEnumerator<float> WalkThePath()
     {
+        if (vec3_WayPoints.Length == 0) yield break;
         Vector3 currentWaypoint = vec3_WayPoints[0];
 
         while (true)
         {
-            if (transform.position == currentWaypoint)
+            if (Vector3.SqrMagnitude(transform.position-currentWaypoint) <  0.0025f)
             {
                 nTargetIndex += 1;
                 if (nTargetIndex >= vec3_WayPoints.Length)

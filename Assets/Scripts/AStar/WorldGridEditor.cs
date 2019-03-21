@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+
+
+using UnityEngine;
 using UnityEditor;
 
 namespace Pathfinding
@@ -16,7 +19,6 @@ namespace Pathfinding
             mWorldGrid = (WorldGrid)target;
 
         }
-
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
@@ -26,6 +28,8 @@ namespace Pathfinding
                 mWorldGrid.Generate();
             }
         }
+
     }
 }
 
+#endif

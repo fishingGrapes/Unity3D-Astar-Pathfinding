@@ -8,13 +8,15 @@ namespace Pathfinding
 
         public Vector3[] Path;
         public bool Success;
-        public Action<Vector3[], bool> OnPathProcessed;
+        public Action<Guid, Vector3[], bool> OnPathProcessed;
+        public Guid RequestID;
 
-        public PathResult(Vector3[] path, bool success, Action<Vector3[], bool> onPathProcessed)
+        public PathResult(Guid requestID, Vector3[] path, bool success, Action<Guid, Vector3[], bool> onPathProcessed)
         {
             this.Path = path;
             this.Success = success;
             this.OnPathProcessed = onPathProcessed;
+            this.RequestID = requestID;
         }
     }
 }

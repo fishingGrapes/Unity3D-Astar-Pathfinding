@@ -73,7 +73,7 @@ namespace Pathfinding
                         for (int i = 0; i < nResultCount; i++)
                         {
                             PathResult mPathResult = queue_PathResults.Dequeue();
-                            mPathResult.OnPathProcessed(mPathResult.Path, mPathResult.Success);
+                            mPathResult.OnPathProcessed(mPathResult.RequestID, mPathResult.Path, mPathResult.Success);
                         }
                     }
                 }

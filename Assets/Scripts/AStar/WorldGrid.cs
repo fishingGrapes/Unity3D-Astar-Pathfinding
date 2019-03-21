@@ -160,8 +160,8 @@ namespace Pathfinding
                         //TODO! : Maybe Chnage SO it is Not Traversable instead of Null
                         if (mHit.collider != null)
                         {
-                            if (y >= 5)
-                                Debug.Log(mHit.collider.name);
+                            //if (y >= 5)
+                            //    Debug.Log(mHit.collider.name);
 
                             //TODO: Add Penalty Based on Obstcale 
                             if (!bTraversable)

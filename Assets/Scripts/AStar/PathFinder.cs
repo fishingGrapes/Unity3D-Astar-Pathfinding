@@ -108,7 +108,7 @@ namespace Pathfinding
             {
                 vec3_WayPoints = this.RetracePath(mStartNode, mDestinationNode);
             }
-            OnPathProcessed(new PathResult(vec3_WayPoints, bPathFound, Request.OnPathProcessed));
+            OnPathProcessed(new PathResult(Request.id, vec3_WayPoints, bPathFound, Request.OnPathProcessed));
         }
 
         #endregion

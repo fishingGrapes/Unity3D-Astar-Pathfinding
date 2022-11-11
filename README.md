@@ -9,3 +9,6 @@
 ![Mutiple Units](https://media.giphy.com/media/WRjFoFmEdYul4f4z1J/giphy.gif) 
 
 >  Multiple Units
+
+
+Followed Sebastian Lague's A* pathfinding tutoria: https://youtube.com/playlist?list=PLFt_AvWsXl0cq5Umv3pMC9SPnKjfp9eGW
